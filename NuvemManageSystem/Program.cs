@@ -8,8 +8,8 @@ class Program
     {
         InputFunctions input = new InputFunctions();
         Console.WriteLine("--------------{Nuvem Manage System}--------------");
-        string? opt = input.InputString(false, "Teste: ", "Caracter");
-        Console.WriteLine($"Você digitou: {opt}");
+        Double? opt = input.InputDouble("Teste: ", "Caracter");
+        Console.WriteLine($"Você digitou: {opt *2}");
         Console.ReadLine();
     }
 }
