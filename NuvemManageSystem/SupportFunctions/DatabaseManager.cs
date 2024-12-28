@@ -109,12 +109,12 @@ namespace NuvemManageSystem.SupportFunctions
             }
         }
 
-        private bool ExecuteSqlWriter(string typeCommand, string table, string[] columns, string[] values, WhereObject? Where=null)
+        public string BuildSqlWriter(string typeCommand, string table, string[] columns, string[] values, WhereObject? Where=null)
         {
             if (columns.Length != values.Length)
             {
                 Console.WriteLine($"Quantidade de valores diferente das colunas:\nColunas: {columns.Length}\nValores: {values.Length}");
-                return false;
+                return "";
             }
             string sql = "";
             string columnsList = string.Join(", ", columns);
@@ -126,23 +126,51 @@ namespace NuvemManageSystem.SupportFunctions
                     sql = $"INSERT INTO {table} ({columnsList}) VALUES ({parametersList})";
                     break;
                 case "update":
-                    sql = $"UPDATE {table}";
-                    break;
-                case "delete":
+                    sql = $"UPDATE {table} SET ";
+                    
+                    for(int i = 0; i< columns.Length; i++)
+                    {
+                        if (i >= 1)
+                        {
+                            sql += ", ";
+                        }
+                        sql += $" {columns[i]} = @{columns[i]} ";
+                    }
                     break;
 
                 default:
                     Console.WriteLine("TypeCommand invalido");
-                    return false;
+                    return "";
             }
             if (Where != null)
             {
-                sql += " WHERE ";
+                sql += Where.GetWhere();
+            }
+            return sql;
+        }
+
+        public string BuildSqlReader(string table, string[] columns, WhereObject? Where = null) 
+        {
+            string sql = "SELECT ";
+
+            for (int i = 0; i<columns.Length; i++)
+            { 
+                if (i >= 1)
+                {
+                    sql += ", ";
+                }
+                sql += $" {columns[i]}";
+            }
+
+            sql += $" FROM {table} ";
+
+            if (Where != null)
+            {
                 sql += Where.GetWhere();
             }
 
-
-            return true;
+            return sql;
         }
+        
     }
 }

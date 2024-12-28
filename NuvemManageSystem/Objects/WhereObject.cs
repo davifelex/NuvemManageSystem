@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace NuvemManageSystem.Objects
 {
-    internal class WhereObject
+    public class WhereObject
     {
         private Dictionary<string, Condition> Conditions = new Dictionary<string, Condition>();
         private Dictionary<string, string> Connections = new Dictionary<string, string>();
         private Condition TempCondition = new Condition("", "", "");
-        private string WhereResult = "";
+        private string WhereResult = " WHERE";
         private Dictionary<string, string> Parameters = new Dictionary<string, string>();
 
         public bool AddCondition(string column, string value, string relation, string Connection)
@@ -52,9 +52,10 @@ namespace NuvemManageSystem.Objects
         {
             try
             {
+                WhereResult = " WHERE ";
                 foreach (string conditionKey in Conditions.Keys)
                 {
-                    WhereResult += $"{Connections[conditionKey]} {conditionKey} = @{conditionKey} ";
+                    WhereResult += $" {Connections[conditionKey]} {conditionKey} = @{conditionKey} ";
                     Parameters[$"@{conditionKey}"] = Conditions[conditionKey].Value;
                 }
             }
@@ -63,25 +64,16 @@ namespace NuvemManageSystem.Objects
                 Console.WriteLine($"Ocorreu um erro ao tentar criar o Where:{ex.Message}");
                 return false;
             }
-            Conditions.Clear();
-            Connections.Clear();
-            Parameters.Clear();
             return true;
         }
         public string GetWhere()
         {
-            if (Conditions.Count > 0)
-            {
-                BuildWhere();
-            }
+            BuildWhere();
             return WhereResult;
         }
         public Dictionary<string, string> GetParameters()
         {
-            if (Parameters.Count > 0)
-            {
-                BuildWhere();
-            }
+            BuildWhere();
             return Parameters;
         }
 

@@ -1,15 +1,19 @@
 ﻿
 
+using NuvemManageSystem.Objects;
 using NuvemManageSystem.SupportFunctions;
 
 class Program
 {
     static void Main()
     {
-        InputFunctions input = new InputFunctions();
-        Console.WriteLine("--------------{Nuvem Manage System}--------------");
-        Double? opt = input.InputDouble("Teste: ", "Caracter");
-        Console.WriteLine($"Você digitou: {opt *2}");
-        Console.ReadLine();
+        DatabaseManager database = new DatabaseManager();
+        WhereObject where = new WhereObject();
+        where.AddCondition("column1", "15", "=", "");
+        where.AddCondition("column2", "10", "=", "AND");
+
+        //string sql = database.BuildSqlWriter("update", "TestTable", ["column1", "colum2"], ["2", "5"], where);
+        string sql = database.BuildSqlReader("TestTable", ["column1", "column2"], where);
+        Console.WriteLine(sql);
     }
 }
